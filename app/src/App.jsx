@@ -2,10 +2,13 @@ import { useState } from "react";
 import CheckIn from "./components/CheckIn";
 import MicroAction from "./components/MicroAction";
 import History from "./components/History";
+import Welcome from "./components/Welcome";
 import "./App.css";
 
 function App() {
-  const [screen, setScreen] = useState("checkin");
+  const savedName = localStorage.getItem("copiloto_name");
+  const [userName, setUserName] = useState(savedName || "");
+  const [screen, setScreen] = useState(savedName ? "checkin" : "welcome");
   const [checkInData, setCheckInData] = useState(null);
   const [recommendation, setRecommendation] = useState(null);
 
@@ -28,10 +31,18 @@ function App() {
     setScreen("checkin");
   }
 
+  function handleWelcomeDone(name) {
+    setUserName(name);
+    setScreen("checkin");
+  }
+
   return (
     <div className="app-container">
+      {screen === "welcome" && (
+        <Welcome onDone={handleWelcomeDone} />
+      )}
       {screen === "checkin" && (
-        <CheckIn onSubmit={handleCheckinSubmit} />
+        <CheckIn onSubmit={handleCheckinSubmit} userName={userName} />
       )}
       {screen === "microaction" && (
         <MicroAction

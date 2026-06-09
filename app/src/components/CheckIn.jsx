@@ -8,7 +8,7 @@ const STATES = [
   { key: "energizado", emoji: "🔥", label: "Con energía" },
 ];
 
-export default function CheckIn({ onSubmit }) {
+export default function CheckIn({ onSubmit, userName }) {
   const [selectedState, setSelectedState] = useState(null);
   const [context, setContext] = useState("");
 
@@ -21,7 +21,7 @@ export default function CheckIn({ onSubmit }) {
   return (
     <div className="screen">
       <div>
-        <h1 className="heading-serif">Buenos días, Carlos</h1>
+        <h1 className="heading-serif">Buenos días, {userName}</h1>
         <p className="subheading" style={{ marginTop: 8 }}>¿Cómo estás hoy?</p>
       </div>
 
