@@ -8,7 +8,7 @@ const STATES = [
   { key: "energizado", emoji: "🔥", label: "Con energía" },
 ];
 
-export default function CheckIn({ onSubmit, userName }) {
+export default function CheckIn({ onSubmit, userName, onSettings }) {
   const [selectedState, setSelectedState] = useState(null);
   const [context, setContext] = useState("");
 
@@ -20,9 +20,12 @@ export default function CheckIn({ onSubmit, userName }) {
 
   return (
     <div className="screen">
-      <div>
-        <h1 className="heading-serif">Buenos días, {userName}</h1>
-        <p className="subheading" style={{ marginTop: 8 }}>¿Cómo estás hoy?</p>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+        <div>
+          <h1 className="heading-serif">Buenos días, {userName}</h1>
+          <p className="subheading" style={{ marginTop: 8 }}>¿Cómo estás hoy?</p>
+        </div>
+        <button className="icon-btn" onClick={onSettings} title="Ajustes">⚙️</button>
       </div>
 
       <div className="emoji-grid">
