@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getRecommendation } from "../lib/recommendations";
+import { getClaudeRecommendation } from "../lib/claude";
 
 const STATES = [
   { key: "agotado", emoji: "😴", label: "Agotado" },
@@ -11,11 +11,17 @@ const STATES = [
 export default function CheckIn({ onSubmit, userName, onSettings }) {
   const [selectedState, setSelectedState] = useState(null);
   const [context, setContext] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit() {
-    if (!selectedState) return;
-    const rec = getRecommendation(selectedState.key, context);
-    onSubmit({ state: selectedState, context }, rec);
+  async function handleSubmit() {
+    if (!selectedState || loading) return;
+    setLoading(true);
+    try {
+      const { rec, source } = await getClaudeRecommendation(selectedState.key, context);
+      onSubmit({ state: selectedState, context }, { ...rec, source });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -56,11 +62,17 @@ export default function CheckIn({ onSubmit, userName, onSettings }) {
 
       <button
         className="btn-primary"
-        disabled={!selectedState}
+        disabled={!selectedState || loading}
         onClick={handleSubmit}
       >
-        Ver mi micro-acción
+        {loading ? "Generando tu acción..." : "Ver mi micro-acción"}
       </button>
+
+      {loading && (
+        <p style={{ textAlign: "center", fontSize: "0.8rem", color: "var(--mid)" }}>
+          Consultando tu copiloto ✨
+        </p>
+      )}
     </div>
   );
 }

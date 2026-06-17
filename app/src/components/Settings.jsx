@@ -31,6 +31,16 @@ export default function Settings({ onBack, onNameChange }) {
   const [notifTime, setNotifTime] = useState(loadNotifTime);
   const [notifStatus, setNotifStatus] = useState("");
   const [savedMsg, setSavedMsg] = useState(false);
+  const [apiKey, setApiKey] = useState(localStorage.getItem("copiloto_api_key") || "");
+  const [apiKeySaved, setApiKeySaved] = useState(false);
+  const [showKey, setShowKey] = useState(false);
+
+  function handleSaveApiKey() {
+    const trimmed = apiKey.trim();
+    localStorage.setItem("copiloto_api_key", trimmed);
+    setApiKeySaved(true);
+    setTimeout(() => setApiKeySaved(false), 2000);
+  }
 
   useEffect(() => {
     if (!("Notification" in window)) {
@@ -219,6 +229,41 @@ export default function Settings({ onBack, onNameChange }) {
         {notifStatus && (
           <p style={{ fontSize: "0.85rem", color: "var(--mid)", marginTop: 8 }}>
             {notifStatus}
+          </p>
+        )}
+      </div>
+
+      {/* ── API de Claude ── */}
+      <div className="settings-section">
+        <p className="settings-section-title">API de Claude (IA real)</p>
+        <p style={{ fontSize: "0.85rem", color: "var(--mid)", marginBottom: 14, lineHeight: 1.6 }}>
+          Sin key, las micro-acciones son predefinidas. Con tu API key de Anthropic, Claude las genera en tiempo real adaptadas a tu día.
+        </p>
+        <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "var(--mid)", marginBottom: 8 }}>
+          API Key
+        </label>
+        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+          <input
+            className="text-input"
+            type={showKey ? "text" : "password"}
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            placeholder="sk-ant-..."
+            style={{ flex: 1, fontFamily: "monospace", fontSize: "0.85rem" }}
+          />
+          <button
+            onClick={() => setShowKey((v) => !v)}
+            style={{ background: "var(--cream)", border: "1px solid #E8E4DC", borderRadius: 10, padding: "0 14px", cursor: "pointer", fontSize: "0.85rem", color: "var(--mid)", flexShrink: 0 }}
+          >
+            {showKey ? "Ocultar" : "Ver"}
+          </button>
+        </div>
+        <button className="btn-primary" onClick={handleSaveApiKey} style={{ fontSize: "0.9rem", padding: "0.65rem 1.4rem" }}>
+          {apiKeySaved ? "¡Guardada!" : "Guardar API key"}
+        </button>
+        {apiKey && (
+          <p style={{ fontSize: "0.78rem", color: "var(--sage-dark)", marginTop: 10 }}>
+            ✓ API key configurada — las micro-acciones se generarán con IA
           </p>
         )}
       </div>
